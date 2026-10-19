@@ -119,17 +119,21 @@ class Bomb:
     """
     爆弾に関するクラス
     """
-    def __init__(self, color: tuple[int, int, int], rad: int):
+    def __init__(self, color: tuple[int, int, int], rad: int, avoid_rct: pg.Rect | None = None):
         """
         引数に基づき爆弾円Surfaceを生成する
         引数1 color：爆弾円の色タプル
         引数2 rad：爆弾円の半径
+        引数3 avoid_rct：爆弾を出現させたくない領域のRect（省略時は制限なし）
         """
         self.img = pg.Surface((2*rad, 2*rad))
         pg.draw.circle(self.img, color, (rad, rad), rad)
         self.img.set_colorkey((0, 0, 0))
         self.rct = self.img.get_rect()
-        self.rct.center = random.randint(0, WIDTH), random.randint(0, HEIGHT)
+        self.rct.center = random.randint(rad, WIDTH-rad), random.randint(rad, HEIGHT-rad)
+        # 開始直後に衝突しないよう，避けたい領域の周囲に出現した場合は配置し直す
+        while avoid_rct is not None and self.rct.colliderect(avoid_rct.inflate(200, 200)):
+            self.rct.center = random.randint(rad, WIDTH-rad), random.randint(rad, HEIGHT-rad)
         self.vx, self.vy = +5, +5
 
     def update(self, screen: pg.Surface):
@@ -237,7 +241,7 @@ def main():
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("fig/pg_bg.jpg")
     bird = Bird((300, 200))
-    bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]  # 爆弾リスト
+    bombs = [Bomb((255, 0, 0), 10, bird.rct) for _ in range(NUM_OF_BOMBS)]  # 爆弾リスト
     beams = []  # ゲーム初期化時にはビームは存在しない
     score = Score()
     exps = []  # 爆発エフェクトのリスト
