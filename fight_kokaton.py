@@ -141,6 +141,34 @@ class Bomb:
         screen.blit(self.img, self.rct)
 
 
+class Explosion:
+    """
+    爆弾を打ち落とした際の爆発エフェクトに関するクラス
+    """
+    def __init__(self, bomb: "Bomb", life: int):
+        """
+        爆発画像Surfaceのリストを生成する
+        引数1 bomb：爆発する爆弾（Bombインスタンス）
+        引数2 life：爆発の表示時間（フレーム数）
+        """
+        img = pg.image.load("fig/explosion.gif")
+        self.imgs = [img, pg.transform.flip(img, True, True)]  # 元画像と上下左右反転画像
+        self.img = self.imgs[0]
+        self.rct = self.img.get_rect()
+        self.rct.center = bomb.rct.center
+        self.life = life
+
+    def update(self, screen: pg.Surface):
+        """
+        爆発経過時間lifeを1減算し，lifeが正なら爆発画像を切り替えて画面に転送する
+        引数 screen：画面Surface
+        """
+        self.life -= 1
+        if self.life > 0:
+            self.img = self.imgs[self.life//10 % 2]  # 10フレームごとに切り替えてチラつきを抑える
+            screen.blit(self.img, self.rct)
+
+
 class Score:
     """
     打ち落とした爆弾の数（スコア）を表示するクラス
@@ -173,6 +201,7 @@ def main():
     bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]  # 爆弾リスト
     beams = []  # ゲーム初期化時にはビームは存在しない
     score = Score()
+    exps = []  # 爆発エフェクトのリスト
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -201,6 +230,7 @@ def main():
                     continue
                 if beam.rct.colliderect(bomb.rct):
                     # ビームと爆弾が衝突したら，両方を消滅させる
+                    exps.append(Explosion(bomb, 50))  # 爆発エフェクト
                     beams[i] = None
                     bombs[b] = None
                     score.score += 1  # 1点アップ
@@ -217,6 +247,9 @@ def main():
             beam.update(screen)
         for bomb in bombs:
             bomb.update(screen)
+        exps = [exp for exp in exps if exp.life > 0]  # 爆発中のものだけにする
+        for exp in exps:
+            exp.update(screen)
         score.update(screen)
         pg.display.update()
         tmr += 1
