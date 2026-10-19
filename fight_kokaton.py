@@ -198,6 +198,40 @@ class Score:
         screen.blit(self.img, self.rct)
 
 
+class GameClear:
+    """
+    すべての爆弾を打ち落とした際のゲームクリア画面に関するクラス
+    """
+    def __init__(self, score: "Score"):
+        """
+        ゲームクリア画面用の半透明Surface，文字列Surface，こうかとん画像Surfaceを生成する
+        引数 score：最終スコア（Scoreインスタンス）
+        """
+        self.bg = pg.Surface((WIDTH, HEIGHT))
+        self.bg.set_alpha(128)  # 背景を半透明の白で覆う
+        self.bg.fill((255, 255, 255))
+        fonto = pg.font.Font(None, 80)
+        self.txt = fonto.render("Game Clear!", True, (255, 128, 0))
+        self.txt_rct = self.txt.get_rect()
+        self.txt_rct.center = WIDTH//2, HEIGHT//2-80
+        self.sub = pg.font.Font(None, 50).render(f"Score: {score.score}", True, (0, 0, 255))
+        self.sub_rct = self.sub.get_rect()
+        self.sub_rct.center = WIDTH//2, HEIGHT//2-10
+        self.img = pg.transform.rotozoom(pg.image.load("fig/6.png"), 0, 1.5)  # 喜ぶこうかとん
+        self.rct = self.img.get_rect()
+        self.rct.center = WIDTH//2, HEIGHT//2+90
+
+    def update(self, screen: pg.Surface):
+        """
+        ゲームクリアの文字列と喜ぶこうかとんを画面に転送する
+        引数 screen：画面Surface
+        """
+        screen.blit(self.bg, [0, 0])
+        screen.blit(self.txt, self.txt_rct)
+        screen.blit(self.sub, self.sub_rct)
+        screen.blit(self.img, self.rct)
+
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -242,6 +276,13 @@ def main():
                     bird.change_img(6, screen)  # こうかとん喜びエフェクト
                     pg.display.update()
         bombs = [bomb for bomb in bombs if bomb is not None]  # 残っている爆弾だけにする
+        if len(bombs) == 0:
+            # すべての爆弾を打ち落としたら，ゲームクリア画面を2秒間表示させる
+            screen.blit(bg_img, [0, 0])
+            GameClear(score).update(screen)
+            pg.display.update()
+            time.sleep(2)
+            return
         beams = [beam for beam in beams if beam is not None]  # 残っているビームだけにする
         # 画面外に出たビームはリストから削除する
         beams = [beam for beam in beams if check_bound(beam.rct) == (True, True)]
