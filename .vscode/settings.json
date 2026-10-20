@@ -1,0 +1,13 @@
+{
+  "python.defaultInterpreterPath": "C:\\Users\\c0a25107a3\\anaconda3\\envs\\ProjExD\\python.exe",
+  "python.condaPath": "C:\\Users\\c0a25107a3\\anaconda3\\Scripts\\conda.exe",
+  "python.terminal.activateEnvironment": true,
+  "files.encoding": "utf8",
+  "python-envs.pythonProjects": [
+    {
+      "path": ".",
+      "envManager": "ms-python.python:system",
+      "packageManager": "ms-python.python:pip"
+    }
+  ]
+}

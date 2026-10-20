@@ -3,8 +3,9 @@ import os
 import random
 import sys
 import time
-import pygame as pg
+from typing import ClassVar
 
+import pygame as pg
 
 WIDTH = 1100  # ゲームウィンドウの幅
 HEIGHT = 650  # ゲームウィンドウの高さ
@@ -30,7 +31,7 @@ class Bird:
     """
     ゲームキャラクター（こうかとん）に関するクラス
     """
-    delta = {  # 押下キーと移動量の辞書
+    delta: ClassVar[dict[int, tuple[int, int]]] = {  # 押下キーと移動量の辞書
         pg.K_UP: (0, -5),
         pg.K_DOWN: (0, +5),
         pg.K_LEFT: (-5, 0),
@@ -38,7 +39,7 @@ class Bird:
     }
     img0 = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
     img = pg.transform.flip(img0, True, False)  # デフォルトのこうかとん（右向き）
-    imgs = {  # 0度から反時計回りに定義
+    imgs: ClassVar[dict[tuple[int, int], pg.Surface]] = {  # 0度から反時計回りに定義
         (+5, 0): img,  # 右
         (+5, -5): pg.transform.rotozoom(img, 45, 0.9),  # 右上
         (0, -5): pg.transform.rotozoom(img, 90, 0.9),  # 上
@@ -269,7 +270,8 @@ def main():
 
         for b, bomb in enumerate(bombs):
             for i, beam in enumerate(beams):
-                if beam is None or bombs[b] is None:
+                # 衝突後はbombs[b]をNoneにするため、リスト内の最新状態を確認する
+                if beam is None or bombs[b] is None:  # noqa: PLR1736
                     continue
                 if beam.rct.colliderect(bomb.rct):
                     # ビームと爆弾が衝突したら，両方を消滅させる

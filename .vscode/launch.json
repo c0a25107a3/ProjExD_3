@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "第3回：たたかえ！こうかとん",
+      "type": "debugpy",
+      "request": "launch",
+      "python": "C:\\Users\\c0a25107a3\\anaconda3\\envs\\ProjExD\\python.exe",
+      "program": "${workspaceFolder}/fight_kokaton.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ]
+}

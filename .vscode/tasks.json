@@ -1,0 +1,21 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "第3回：ゲームを実行",
+      "type": "process",
+      "command": "C:\\Users\\c0a25107a3\\anaconda3\\envs\\ProjExD\\python.exe",
+      "args": [
+        "${workspaceFolder}/fight_kokaton.py"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
