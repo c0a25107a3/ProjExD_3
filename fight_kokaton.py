@@ -215,13 +215,16 @@ class GameClear:
         self.bg = pg.Surface((WIDTH, HEIGHT))
         self.bg.set_alpha(128)  # 背景を半透明の白で覆う
         self.bg.fill((255, 255, 255))
+
         fonto = pg.font.Font(None, 80)
         self.txt = fonto.render("Game Clear!", True, (255, 128, 0))
         self.txt_rct = self.txt.get_rect()
         self.txt_rct.center = WIDTH//2, HEIGHT//2-80
+
         self.sub = pg.font.Font(None, 50).render(f"Score: {score.score}", True, (0, 0, 255))
         self.sub_rct = self.sub.get_rect()
         self.sub_rct.center = WIDTH//2, HEIGHT//2-10
+
         self.img = pg.transform.rotozoom(pg.image.load("fig/6.png"), 0, 1.5)  # 喜ぶこうかとん
         self.rct = self.img.get_rect()
         self.rct.center = WIDTH//2, HEIGHT//2+90
